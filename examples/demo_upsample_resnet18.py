@@ -1,7 +1,7 @@
 import hydra
 import torch
 
-from networks.upsample_resnet import ResNetUpsample, ResNetUpsampleConfig
+from src.networks.upsample_resnet import ResNetUpsample, ResNetUpsampleConfig
 
 
 @hydra.main(

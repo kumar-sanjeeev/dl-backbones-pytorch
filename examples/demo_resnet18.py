@@ -1,7 +1,7 @@
 import hydra
 import torch
 
-from backbones.resnet.resnet import ResNet
+from src.backbones.resnet.resnet import ResNet
 
 
 @hydra.main(version_base=None, config_path="../configs/resnet", config_name="resnet18")

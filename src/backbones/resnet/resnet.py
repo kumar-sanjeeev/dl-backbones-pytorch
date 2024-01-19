@@ -4,7 +4,7 @@ import torch
 from torch import nn
 from torch.utils import model_zoo
 
-from .resnet_blocks import BasicBlock, BottleneckBlock, blocks_dict
+from .resnet_blocks import blocks_dict
 
 model_urls = {
     "resnet18": "https://download.pytorch.org/models/resnet18-5c106cde.pth",
