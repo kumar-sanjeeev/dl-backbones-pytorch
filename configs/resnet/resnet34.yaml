@@ -1,0 +1,4 @@
+block_type: BASIC
+layers: [3, 4, 6, 3]
+num_classes: 1000
+remove_avg_pool_layer: False

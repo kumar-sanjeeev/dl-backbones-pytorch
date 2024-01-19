@@ -1,0 +1,4 @@
+block_type: BOTTLENECK
+layers: [3, 8, 36, 3]
+num_classes: 1000
+remove_avg_pool_layer: False

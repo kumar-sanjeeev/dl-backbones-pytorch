@@ -1,0 +1,22 @@
+#--------------- pytorch-------------#
+torch
+torchvision
+torchaudio
+
+#------ pytorch lightning------------#
+lightning
+
+#----- hydra -----------#
+hydra-core
+
+#----- others --------#
+pre-commit
+pytest
+matplotlib
+tensorboard
+opencv-python
+scikit-image
+open3d
+black
+pythreejs
+onnx
