@@ -25,6 +25,7 @@ class ResNet(nn.Module):
         block_type (str): Type of block [BASIC, BOTTLENECK].
         layers (List[int]): Number of layers for each block.
         num_classes (int, optional): Number of classes. Default is 1000.
+        full_conv (bool, optional): If True, avg pooling layer returns 7x7 output. Default is False.
         remove_avg_pool_layer (bool, optional): Remove avg pool layer. Default is False.
     """
 
@@ -33,10 +34,12 @@ class ResNet(nn.Module):
         block_type: str,
         layers: List[int],
         num_classes: int = 1000,
+        full_conv: bool = False,
         remove_avg_pool_layer: bool = False,
     ):
         super(ResNet, self).__init__()
         self.remove_avg_pool_layer = remove_avg_pool_layer
+        self.full_conv = full_conv
         self.inplanes = 64
 
         # Resnet Stem
@@ -46,13 +49,18 @@ class ResNet(nn.Module):
         self.maxpool = nn.MaxPool2d(kernel_size=3, stride=2, padding=1)
 
         # Resnet Blocks
-        self.conv_2x_layer = self._make_layer(block_type, 64, layers[0])
-        self.conv_3x_layer = self._make_layer(block_type, 128, layers[1], stride=2)
-        self.conv_4x_layer = self._make_layer(block_type, 256, layers[2], stride=2)
-        self.conv_5x_layer = self._make_layer(block_type, 512, layers[3], stride=2)
+        self.layer1 = self._make_layer(block_type, 64, layers[0])
+        self.layer2 = self._make_layer(block_type, 128, layers[1], stride=2)
+        self.layer3 = self._make_layer(block_type, 256, layers[2], stride=2)
+        self.layer4 = self._make_layer(block_type, 512, layers[3], stride=2)
 
         self.avgpool = nn.AvgPool2d(7)
+
         self.fc = nn.Linear(512 * blocks_dict[block_type].expansion, num_classes)
+
+        if self.full_conv:
+            self.avgpool = nn.AvgPool2d(7, padding=3, stride=1)
+            
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         """
@@ -69,15 +77,17 @@ class ResNet(nn.Module):
         x = self.relu(x)
         x = self.maxpool(x)
 
-        conv_2x = self.conv_2x_layer(x)
-        conv_3x = self.conv_3x_layer(conv_2x)
-        conv_4x = self.conv_4x_layer(conv_3x)
-        conv_5x = self.conv_5x_layer(conv_4x)
+        x = self.layer1(x)
+        x = self.layer2(x)
+        x = self.layer3(x)
+        x = self.layer4(x)
 
         if not self.remove_avg_pool_layer:
-            x = self.avgpool(conv_5x)
+            x = self.avgpool(x)
+        
+        if not self.full_conv:
+            x = x.view(x.size(0), -1)
 
-        x = x.view(x.size(0), -1)
         x = self.fc(x)
 
         return x
@@ -123,7 +133,7 @@ def resnet18(pretrained: bool = False, **kwargs) -> ResNet:
     Args:
         pretrained (bool, optional): If True, returns a model pre-trained on ImageNet.
     """
-    model = ResNet(BasicBlock, [2, 2, 2, 2], **kwargs)
+    model = ResNet("BASIC", [2, 2, 2, 2], **kwargs)
     if pretrained:
         model.load_state_dict(model_zoo.load_url(model_urls["resnet18"]))
 
@@ -137,7 +147,7 @@ def resnet34(pretrained: bool = False, **kwargs) -> ResNet:
     Args:
         pretrained (bool, optional): If True, returns a model pre-trained on ImageNet.
     """
-    model = ResNet(BasicBlock, [3, 4, 6, 3], **kwargs)
+    model = ResNet("BASIC", [3, 4, 6, 3], **kwargs)
     if pretrained:
         model.load_state_dict(model_zoo.load_url(model_urls["resnet34"]))
 
@@ -151,7 +161,7 @@ def resnet50(pretrained: bool = False, **kwargs) -> ResNet:
     Args:
         pretrained (bool, optional): If True, returns a model pre-trained on ImageNet.
     """
-    model = ResNet(BottleneckBlock, [3, 4, 6, 3], **kwargs)
+    model = ResNet("BOTTLENECK", [3, 4, 6, 3], **kwargs)
     if pretrained:
         model.load_state_dict(model_zoo.load_url(model_urls["resnet50"]))
 
@@ -165,7 +175,7 @@ def resnet101(pretrained: bool = False, **kwargs) -> ResNet:
     Args:
         pretrained (bool, optional): If True, returns a model pre-trained on ImageNet.
     """
-    model = ResNet(BottleneckBlock, [3, 4, 23, 3], **kwargs)
+    model = ResNet("BOTTLENECK", [3, 4, 23, 3], **kwargs)
     if pretrained:
         model.load_state_dict(model_zoo.load_url(model_urls["resnet101"]))
 
@@ -179,7 +189,7 @@ def resnet152(pretrained: bool = False, **kwargs) -> ResNet:
     Args:
         pretrained (bool, optional): If True, returns a model pre-trained on ImageNet.
     """
-    model = ResNet(BottleneckBlock, [3, 8, 36, 3], **kwargs)
+    model = ResNet("BOTTLENECK", [3, 8, 36, 3], **kwargs)
     if pretrained:
         model.load_state_dict(model_zoo.load_url(model_urls["resnet152"]))
 
