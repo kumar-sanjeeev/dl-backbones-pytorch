@@ -1,4 +1,5 @@
 block_type: BASIC
 layers: [2, 2, 2, 2]
 num_classes: 1000
+full_conv: False
 remove_avg_pool_layer: False
