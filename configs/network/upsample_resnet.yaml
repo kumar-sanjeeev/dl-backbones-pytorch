@@ -1,0 +1,6 @@
+backbone_type: resnet18
+pretrained: True
+remove_avg_pool_layer: True
+full_conv: True
+upsample: True
+upsample_dim: 10
