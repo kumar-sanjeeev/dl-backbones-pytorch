@@ -60,7 +60,6 @@ class ResNet(nn.Module):
 
         if self.full_conv:
             self.avgpool = nn.AvgPool2d(7, padding=3, stride=1)
-            
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         """
@@ -84,7 +83,7 @@ class ResNet(nn.Module):
 
         if not self.remove_avg_pool_layer:
             x = self.avgpool(x)
-        
+
         if not self.full_conv:
             x = x.view(x.size(0), -1)
 

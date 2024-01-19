@@ -11,6 +11,7 @@ def main(cfg):
         layers=cfg.layers,
         num_classes=cfg.num_classes,
         remove_avg_pool_layer=cfg.remove_avg_pool_layer,
+        full_conv=cfg.full_conv,
     )
     dummy_image_tensor = torch.randn(1, 3, 224, 224)
     out = model(dummy_image_tensor)
