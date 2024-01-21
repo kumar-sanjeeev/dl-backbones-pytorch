@@ -11,6 +11,7 @@ import backbones.resnet.resnet as resnet_backbones
 @dataclass
 class ResNetUpsampleConfig:
     """Configuration with all tunable parameters for the ResNetUpsample network."""
+
     backbone_type: str
     pretrained: bool = True
     remove_avg_pool_layer: bool = True
@@ -66,7 +67,12 @@ class ResNetUpsample(nn.Module):
 
         # Change the fc layer to a convolutional layer
         self.backbone.fc = nn.Conv2d(
-            self.backbone.inplanes, upsample_dim, kernel_size=1, stride=1, padding=0, bias=True
+            self.backbone.inplanes,
+            upsample_dim,
+            kernel_size=1,
+            stride=1,
+            padding=0,
+            bias=True,
         )
         self._normal_initialization(self.backbone.fc)
 
