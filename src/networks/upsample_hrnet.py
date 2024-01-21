@@ -8,12 +8,6 @@ from hydra.core.config_store import ConfigStore
 
 from src.backbones.hrnet.hrnet import HRNET
 
-# def hrnet18(pretrained: bool = False, **kwargs):
-#     model = HRNET(**kwargs)
-#     if pretrained:
-#         model.init_weights(pretrained="/home/robotics-noob/Workspaces/dl_ws/dl-backbones/checkpoints/hrnet_w18_small_model_v1.pth")
-#     return model
-
 
 @dataclass
 class StageConfig:
